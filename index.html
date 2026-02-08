@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Conversor Polegadas → MM</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#007bff">
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .app {
+            background: white;
+            padding: 24px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            max-width: 320px;
+            width: 100%
+            text-align: center;
+        }
+        input, {
+            width: 100%;
+            padding: 10px;
+            margin-top: 12px 0;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px;
+            width: 100%;
+            font-size: 16px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .resultado {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app">
+    <h2>Polegadas → Milímetros</h2>
+
+    <input type="text" id="polegadas" placeholder="Ex: 5/16, 1 1/4, 0.75">
+
+    <button onclick="converter()">Converter</button>
+
+    <div class="resultado" id="resultado"></div>
+</div>
+
+<script>
+    function interpretarPolegadas(valor) {
+        valor = valor.trim();
+
+        // Caso: número decimal
+        if (!valor.includes("/")) {
+            return parseFloat(valor);
+        }
+
+        // Caso: número misto (ex: 1 1/4)
+        if (valor.includes(" ")) {
+            const partes = valor.split(" ");
+            const inteiro = parseFloat(partes[0]);
+            const fracao = partes[1].split("/");
+            return inteiro + (fracao[0] / fracao[1]);
+        }
+
+        // Caso: fração simples (ex: 5/16)
+        const fracao = valor.split("/");
+        return fracao[0] / fracao[1];
+    }
+
+    function converter() {
+        const entrada = document.getElementById("polegadas").value;
+
+        if (!entrada) {
+            document.getElementById("resultado").innerText = "Digite um valor válido.";
+            return;
+        }
+
+        const polegadas = interpretarPolegadas(entrada);
+
+        if (isNaN(polegadas)) {
+            document.getElementById("resultado").innerText = "Formato inválido.";
+            return;
+        }
+
+        const mm = polegadas * 25.4;
+
+        document.getElementById("resultado").innerText =
+            entrada + " pol = " + mm.toFixed(3) + " mm";
+    }
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("Service Worker registrado"))
+        .catch(err => console.log("Erro no Service Worker", err));
+}
+</script>
+
+</body>
+</html>
